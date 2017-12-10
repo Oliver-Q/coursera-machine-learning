@@ -20,12 +20,21 @@ idx = zeros(size(X,1), 1);
 %
 % Note: You can use a for-loop over the examples to compute this.
 %
-
-
-
-
-
-
+for i = 1:size(idx,1)
+    c = 0;
+    d = inf;
+    for j=1:K
+        d_temp = 0;
+        for m=1:size(X,2)
+            d_temp = d_temp + (X(i,m)-centroids(j,m)).^2;
+        end
+        if d_temp < d
+            c = j;
+            d = d_temp;
+        end
+    end
+    idx(i) = c;
+end
 
 % =============================================================
 
