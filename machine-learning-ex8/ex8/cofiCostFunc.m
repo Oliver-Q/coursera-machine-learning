@@ -7,7 +7,8 @@ function [J, grad] = cofiCostFunc(params, Y, R, num_users, num_movies, ...
 %
 
 % Unfold the U and W matrices from params
-X = reshape(params(1:num_movies*num_features), num_movies, num_features);   %5x3
+X = reshape(params(1:num_movies*num_features), ...
+    num_movies, num_features);   %5x3
 Theta = reshape(params(num_movies*num_features+1:end), ...
                 num_users, num_features);   %4x3
 
@@ -46,26 +47,10 @@ for i=1:size(R,1)
         end
     end
 end
-J = J./2;
+J = J./2 + lambda./2.*sum(sum(X.^2)) + lambda./2.*sum(sum(Theta.^2));
 
-for i=1:size(R,1)
-    for j=1:size(R,2)
-        if R(i,j)==1
-            for k=1:size(X,1)
-                X_grad(k,j)=(Theta(j,:)*X(i,:)' - Y(i,j))*Theta(j,k);
-            end
-        end
-    end
-end
-
-
-
-
-
-
-
-
-
+X_grad = ((X * Theta' - Y) .* R) * Theta + lambda.*X;
+Theta_grad = ((X * Theta' - Y) .* R)' * X + lambda.*Theta;
 
 
 % =============================================================
